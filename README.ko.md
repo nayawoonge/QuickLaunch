@@ -33,7 +33,7 @@
 
 ### 다운로드 (권장)
 
-1. [Releases](../../releases)에서 최신 `QuickLaunch.dmg` 다운로드
+1. [**QuickLaunch.dmg**](https://github.com/nayawoonge/QuickLaunch/releases/latest/download/QuickLaunch.dmg) 다운로드 (또는 [Releases](../../releases)에서 선택)
 2. DMG를 열고 **QuickLaunch**를 **Applications** 폴더로 드래그
 3. 첫 실행 시: 공증되지 않은 앱이므로 **우클릭 → 열기**, 또는 터미널에서:
    ```bash

@@ -33,7 +33,7 @@
 
 ### Download (recommended)
 
-1. Download the latest `QuickLaunch.dmg` from [Releases](../../releases)
+1. Download [**QuickLaunch.dmg**](https://github.com/nayawoonge/QuickLaunch/releases/latest/download/QuickLaunch.dmg) (or browse [Releases](../../releases))
 2. Open the DMG and drag **QuickLaunch** into the **Applications** folder
 3. First launch: the app is not notarized, so **right-click → Open**, or run:
    ```bash
