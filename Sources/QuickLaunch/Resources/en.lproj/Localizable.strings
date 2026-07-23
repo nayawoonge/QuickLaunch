@@ -1,0 +1,33 @@
+"app.name" = "QuickLaunch";
+
+"shortcuts.title" = "Registered Shortcuts";
+"shortcuts.empty" = "No shortcuts yet.\nClick + to add one.";
+"shortcuts.add" = "Add";
+"shortcuts.edit" = "Edit";
+"shortcuts.delete" = "Delete";
+
+"add.title" = "Add Shortcut";
+"edit.title" = "Edit Shortcut";
+"add.selectApp" = "Select App";
+"add.search" = "Search";
+"add.shortcut" = "Shortcut";
+"add.chooseOther" = "Choose Another App…";
+"add.save" = "Save";
+"add.cancel" = "Cancel";
+"add.duplicate" = "This shortcut is already in use.";
+
+"recorder.click" = "Click to Record";
+"recorder.press" = "Press keys… (ESC to cancel)";
+
+"settings.title" = "Settings";
+"settings.launchAtLogin" = "Launch at login";
+"settings.showMenuBar" = "Show icon in menu bar";
+"settings.hideDock" = "Hide Dock icon";
+"settings.hiddenWarning" = "Both the menu bar and Dock icons are hidden. To reopen this window, launch QuickLaunch again.";
+"settings.loginError" = "Failed to update the login item. Move QuickLaunch.app to /Applications and try again.";
+
+"menubar.open" = "Open QuickLaunch";
+"menubar.quit" = "Quit";
+"menubar.noShortcuts" = "No shortcuts registered";
+
+"alert.registerFailed" = "Failed to register this hotkey. It may be reserved by the system or another app.";
