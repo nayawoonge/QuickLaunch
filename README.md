@@ -20,18 +20,14 @@
 
 ## Screenshots
 
-<!--
-  Add your screenshots to docs/ and uncomment:
-
 <p align="center">
   <img src="docs/screenshot-main.png" width="540" alt="Main window">
 </p>
 <p align="center">
   <img src="docs/screenshot-add.png" width="440" alt="Add shortcut">
 </p>
--->
 
-> _Screenshots coming soon._
+
 
 ## Install
 

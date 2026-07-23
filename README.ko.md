@@ -20,8 +20,6 @@
 
 ## 스크린샷
 
-<!--
-  docs/ 폴더에 스크린샷을 넣고 아래 주석을 해제하세요:
 
 <p align="center">
   <img src="docs/screenshot-main.png" width="540" alt="메인 창">
@@ -29,9 +27,7 @@
 <p align="center">
   <img src="docs/screenshot-add.png" width="440" alt="단축키 추가">
 </p>
--->
 
-> _스크린샷 준비 중._
 
 ## 설치
 
