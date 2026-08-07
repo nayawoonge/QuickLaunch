@@ -2,6 +2,7 @@ import SwiftUI
 
 struct MenuBarContent: View {
     @ObservedObject private var store = ShortcutStore.shared
+    @Environment(\.openWindow) private var openWindow
 
     var body: some View {
         if store.shortcuts.isEmpty {
@@ -17,7 +18,8 @@ struct MenuBarContent: View {
         Divider()
 
         Button(L("menubar.open")) {
-            AppDelegate.shared.showMainWindow()
+            openWindow(id: "main")
+            NSApp.activate(ignoringOtherApps: true)
         }
 
         Divider()

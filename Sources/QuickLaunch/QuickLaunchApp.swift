@@ -6,6 +6,13 @@ struct QuickLaunchApp: App {
     @AppStorage(PrefKey.showMenuBarIcon) private var showMenuBarIcon = true
 
     var body: some Scene {
+        Window(L("app.name"), id: "main") {
+            ContentView()
+                .frame(width: 540, height: 620)
+        }
+        .windowStyle(.titleBar)
+        .windowResizability(.contentSize)
+
         MenuBarExtra(isInserted: $showMenuBarIcon) {
             MenuBarContent()
         } label: {

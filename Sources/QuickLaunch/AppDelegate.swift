@@ -4,8 +4,6 @@ import SwiftUI
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private(set) static var shared: AppDelegate!
 
-    private var mainWindow: NSWindow?
-
     func applicationWillFinishLaunching(_ notification: Notification) {
         AppDelegate.shared = self
         applyActivationPolicy()
@@ -13,35 +11,34 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         _ = ShortcutStore.shared // load + register hotkeys
-        showMainWindow()
+
+        // Give SwiftUI a run-loop cycle to set up the Window scene,
+        // then make sure it is visible and the app is active.
+        DispatchQueue.main.async {
+            self.openMainWindow()
+        }
     }
 
-    /// Launching the app again while it is running (the escape hatch when both
-    /// the menu bar icon and the Dock icon are hidden) lands here.
     func applicationShouldHandleReopen(_ sender: NSApplication,
                                        hasVisibleWindows: Bool) -> Bool {
-        showMainWindow()
+        openMainWindow()
         return true
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
-        false // keep hotkeys alive with no windows open
+        false
     }
 
-    // MARK: - Main window
+    // MARK: - Window helpers
 
-    func showMainWindow() {
-        if mainWindow == nil {
-            let hosting = NSHostingController(rootView: ContentView())
-            let window = NSWindow(contentViewController: hosting)
-            window.title = L("app.name")
-            window.styleMask = [.titled, .closable, .miniaturizable]
-            window.isReleasedWhenClosed = false
-            window.setContentSize(NSSize(width: 540, height: 620))
-            window.center()
-            mainWindow = window
+    func openMainWindow() {
+        // Find the SwiftUI-managed main window and bring it forward.
+        if let window = NSApp.windows.first(where: {
+            $0.identifier?.rawValue.contains("main") == true
+                || $0.title == L("app.name")
+        }) {
+            window.makeKeyAndOrderFront(nil)
         }
-        mainWindow?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
     }
 
@@ -50,10 +47,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applyActivationPolicy() {
         let hideDock = UserDefaults.standard.bool(forKey: PrefKey.hideDockIcon)
         NSApp.setActivationPolicy(hideDock ? .accessory : .regular)
-        // Switching policy can drop key-window status; restore it.
-        if mainWindow?.isVisible == true {
+        DispatchQueue.main.async {
             NSApp.activate(ignoringOtherApps: true)
-            mainWindow?.makeKeyAndOrderFront(nil)
         }
     }
 }
