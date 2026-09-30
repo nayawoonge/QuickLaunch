@@ -75,8 +75,17 @@ struct ShortcutEditorView: View {
             .frame(height: 220)
             .background(.quaternary.opacity(0.5), in: RoundedRectangle(cornerRadius: 8))
 
-            Button(L("add.chooseOther")) { chooseOtherApp() }
-                .controlSize(.small)
+            HStack {
+                Button(L("add.chooseOther")) {
+                    chooseApp(startingAt: URL(fileURLWithPath: "/Applications"))
+                }
+                if let chromeAppsDirectory {
+                    Button(L("add.chooseChromeApp")) {
+                        chooseApp(startingAt: chromeAppsDirectory)
+                    }
+                }
+            }
+            .controlSize(.small)
         }
     }
 
@@ -155,10 +164,23 @@ struct ShortcutEditorView: View {
         }
     }
 
-    private func chooseOtherApp() {
+    private var chromeAppsDirectory: URL? {
+        let url = URL(fileURLWithPath: NSHomeDirectory())
+            .appendingPathComponent("Applications", isDirectory: true)
+            .appendingPathComponent("Chrome Apps.localized", isDirectory: true)
+        var isDirectory: ObjCBool = false
+        guard FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory),
+              isDirectory.boolValue
+        else { return nil }
+        return url
+    }
+
+    private func chooseApp(startingAt directoryURL: URL) {
         let panel = NSOpenPanel()
         panel.allowedContentTypes = [.application]
-        panel.directoryURL = URL(fileURLWithPath: "/Applications")
+        panel.directoryURL = directoryURL
+        panel.canChooseDirectories = false
+        panel.canChooseFiles = true
         panel.allowsMultipleSelection = false
         guard panel.runModal() == .OK,
               let url = panel.url,

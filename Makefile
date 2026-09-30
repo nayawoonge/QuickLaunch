@@ -4,16 +4,14 @@ APP_PATH = $(BUILD)/$(APP).app
 
 # `make app ARCHS="--arch arm64 --arch x86_64"` for a universal binary (needs Xcode).
 ARCHS ?=
-ifeq ($(strip $(ARCHS)),)
-BIN_DIR = .build/release
-else
-BIN_DIR = .build/apple/Products/Release
-endif
+# Optional local SDK/build-system overrides; use the matching output directory.
+SWIFT_BUILD_FLAGS ?=
+BIN_DIR = $(shell swift build -c release $(ARCHS) $(SWIFT_BUILD_FLAGS) --show-bin-path)
 
 .PHONY: build app dmg install run clean
 
 build:
-	swift build -c release $(ARCHS)
+	swift build -c release $(ARCHS) $(SWIFT_BUILD_FLAGS)
 
 app: build
 	rm -rf $(APP_PATH)

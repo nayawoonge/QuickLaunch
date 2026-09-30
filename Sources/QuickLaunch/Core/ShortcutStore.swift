@@ -48,16 +48,8 @@ final class ShortcutStore: ObservableObject {
     // MARK: - Launching
 
     func launch(_ shortcut: AppShortcut) {
-        let config = NSWorkspace.OpenConfiguration()
-        config.activates = true
-
-        let url = URL(fileURLWithPath: shortcut.appPath)
-        if FileManager.default.fileExists(atPath: shortcut.appPath) {
-            NSWorkspace.shared.openApplication(at: url, configuration: config)
-        } else if let resolved = NSWorkspace.shared
-            .urlForApplication(withBundleIdentifier: shortcut.bundleID) {
-            // The app moved since it was registered; fall back to its bundle ID.
-            NSWorkspace.shared.openApplication(at: resolved, configuration: config)
+        Task { @MainActor in
+            AppLauncher.shared.launch(shortcut)
         }
     }
 

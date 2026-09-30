@@ -12,6 +12,7 @@
 "add.search" = "Search";
 "add.shortcut" = "Shortcut";
 "add.chooseOther" = "Choose Another App…";
+"add.chooseChromeApp" = "Choose Chrome Web App…";
 "add.save" = "Save";
 "add.cancel" = "Cancel";
 "add.duplicate" = "This shortcut is already in use.";
@@ -23,6 +24,10 @@
 "settings.launchAtLogin" = "Launch at login";
 "settings.showMenuBar" = "Show icon in menu bar";
 "settings.hideDock" = "Hide Dock icon";
+"settings.restoreMinimized" = "Restore minimized windows";
+"settings.restoreMinimizedHelp" = "Bring an existing window forward. If all windows are minimized, restore one.";
+"settings.accessibilityRequired" = "Allow QuickLaunch in System Settings → Privacy & Security → Accessibility to restore windows. Basic app launching still works without access.";
+"settings.allowAccessibility" = "Allow Accessibility…";
 "settings.hiddenWarning" = "Both the menu bar and Dock icons are hidden. To reopen this window, launch QuickLaunch again.";
 "settings.loginError" = "Failed to update the login item. Move QuickLaunch.app to /Applications and try again.";
 

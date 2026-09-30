@@ -24,4 +24,5 @@ func L(_ key: String) -> String {
 enum PrefKey {
     static let showMenuBarIcon = "showMenuBarIcon"
     static let hideDockIcon = "hideDockIcon"
+    static let restoreMinimizedWindows = "restoreMinimizedWindows"
 }

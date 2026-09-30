@@ -10,6 +10,10 @@ let package = Package(
             name: "QuickLaunch",
             path: "Sources/QuickLaunch",
             resources: [.process("Resources")]
+        ),
+        .testTarget(
+            name: "QuickLaunchTests",
+            dependencies: ["QuickLaunch"]
         )
     ]
 )

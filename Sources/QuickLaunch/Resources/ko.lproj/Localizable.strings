@@ -12,6 +12,7 @@
 "add.search" = "검색";
 "add.shortcut" = "단축키";
 "add.chooseOther" = "다른 앱 선택…";
+"add.chooseChromeApp" = "Chrome 웹 앱 선택…";
 "add.save" = "저장";
 "add.cancel" = "취소";
 "add.duplicate" = "이미 사용 중인 단축키입니다.";
@@ -23,6 +24,10 @@
 "settings.launchAtLogin" = "로그인 시 자동 실행";
 "settings.showMenuBar" = "메뉴 막대에 아이콘 표시";
 "settings.hideDock" = "Dock 아이콘 숨기기";
+"settings.restoreMinimized" = "최소화된 창 복원";
+"settings.restoreMinimizedHelp" = "열려 있는 창을 앞으로 가져옵니다. 모든 창이 최소화되어 있으면 하나를 복원합니다.";
+"settings.accessibilityRequired" = "창을 복원하려면 시스템 설정 → 개인정보 보호 및 보안 → 손쉬운 사용에서 QuickLaunch를 허용하세요. 권한 없이도 기본 앱 실행은 가능합니다.";
+"settings.allowAccessibility" = "손쉬운 사용 권한 허용…";
 "settings.hiddenWarning" = "메뉴 막대와 Dock 아이콘이 모두 숨겨져 있습니다. 설정 창을 다시 열려면 QuickLaunch 앱을 다시 실행하세요.";
 "settings.loginError" = "로그인 항목 등록에 실패했습니다. QuickLaunch.app을 /Applications로 옮긴 뒤 다시 시도하세요.";
 

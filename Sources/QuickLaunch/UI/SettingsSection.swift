@@ -4,9 +4,11 @@ import ServiceManagement
 struct SettingsSection: View {
     @AppStorage(PrefKey.showMenuBarIcon) private var showMenuBarIcon = true
     @AppStorage(PrefKey.hideDockIcon) private var hideDockIcon = false
+    @AppStorage(PrefKey.restoreMinimizedWindows) private var restoreMinimizedWindows = false
 
     @State private var launchAtLogin = LoginItemManager.isEnabled
     @State private var loginItemError: String?
+    @State private var accessibilityGranted = WindowRestorer.hasPermission
 
     var body: some View {
         GroupBox(L("settings.title")) {
@@ -29,6 +31,26 @@ struct SettingsSection: View {
                         AppDelegate.shared.applyActivationPolicy()
                     }
 
+                Toggle(L("settings.restoreMinimized"), isOn: $restoreMinimizedWindows)
+                    .onChange(of: restoreMinimizedWindows) { _, _ in
+                        accessibilityGranted = WindowRestorer.hasPermission
+                    }
+
+                if restoreMinimizedWindows {
+                    Text(L(accessibilityGranted
+                           ? "settings.restoreMinimizedHelp" : "settings.accessibilityRequired"))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    if !accessibilityGranted {
+                        Button(L("settings.allowAccessibility")) {
+                            WindowRestorer.requestPermission()
+                            accessibilityGranted = WindowRestorer.hasPermission
+                        }
+                        .controlSize(.small)
+                    }
+                }
+
                 if !showMenuBarIcon && hideDockIcon {
                     Label(L("settings.hiddenWarning"), systemImage: "info.circle")
                         .font(.caption)
@@ -40,6 +62,10 @@ struct SettingsSection: View {
         }
         .onAppear {
             launchAtLogin = LoginItemManager.isEnabled
+            accessibilityGranted = WindowRestorer.hasPermission
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+            accessibilityGranted = WindowRestorer.hasPermission
         }
     }
 

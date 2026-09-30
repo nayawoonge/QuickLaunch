@@ -7,26 +7,34 @@ struct InstalledApp: Identifiable, Hashable {
     let path: String
 }
 
-/// Finds installed applications in the standard locations.
+/// Finds installed applications in the standard locations, including browser
+/// web apps such as Chrome PWAs stored below `~/Applications/Chrome Apps.localized`.
 enum AppScanner {
     private static let searchDirectories = [
         "/Applications",
-        "/Applications/Utilities",
         "/System/Applications",
-        "/System/Applications/Utilities",
         NSHomeDirectory() + "/Applications",
     ]
 
     static func scan() -> [InstalledApp] {
+        scan(in: searchDirectories)
+    }
+
+    /// Separated for deterministic tests with temporary application folders.
+    static func scan(in directories: [String]) -> [InstalledApp] {
         var seen: Set<String> = []
         var apps: [InstalledApp] = []
 
-        for directory in searchDirectories {
-            let entries = (try? FileManager.default
-                .contentsOfDirectory(atPath: directory)) ?? []
-            for entry in entries where entry.hasSuffix(".app") {
-                let path = directory + "/" + entry
-                if let app = installedApp(at: path), seen.insert(app.bundleID).inserted {
+        for directory in directories {
+            let rootURL = URL(fileURLWithPath: directory, isDirectory: true)
+            guard let enumerator = FileManager.default.enumerator(
+                at: rootURL,
+                includingPropertiesForKeys: [.isApplicationKey],
+                options: [.skipsHiddenFiles, .skipsPackageDescendants]
+            ) else { continue }
+
+            for case let url as URL in enumerator where url.pathExtension == "app" {
+                if let app = installedApp(at: url.path), seen.insert(app.bundleID).inserted {
                     apps.append(app)
                 }
             }
