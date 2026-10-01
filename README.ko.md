@@ -20,6 +20,14 @@
 - 🫥 Dock(하단) 아이콘 숨기기 옵션
 - 🌐 한국어 / English 자동 지원 (시스템 언어 따름)
 
+## v1.0.3 변경 사항
+
+- 앱 선택 목록에 Finder가 표시됩니다.
+- Finder 단축키가 새 창을 만들 수 있는 다시 열기 요청 대신 기존 창을 활성화합니다.
+- 시스템의 Finder 검색 단축키 대신 `⌥⌘Space`를 사용하는 설정 안내를 추가했습니다.
+
+자세한 내용은 [영문·한국어 릴리스 노트](docs/releases/v1.0.3.md), 다음 버전 배포 방법은 [릴리스 작성 가이드](docs/releases/README.md)를 참고하세요.
+
 ## 스크린샷
 
 
@@ -68,6 +76,14 @@ make app SWIFT_BUILD_FLAGS="--build-system native --sdk /Library/Developer/Comma
 2. 앱 선택 후 **클릭하여 입력** 버튼을 누르고 원하는 키 조합 입력 (예: `⌥⌘T`)
 3. 저장하면 어느 앱에서든 해당 단축키로 앱이 실행/활성화됩니다
 
+### ⌥⌘Space로 기존 Finder 창 사용하기
+
+1. **시스템 설정 → 키보드 → 키보드 단축키 → Spotlight**에서 **Finder 검색 윈도우 보기**(⌥⌘Space)를 끄세요. 기본 단축키는 Finder 검색 창을 여는 기능입니다. [Apple 단축키 안내](https://support.apple.com/ko-kr/102650)
+2. QuickLaunch에서 **추가(+) → Finder**를 선택하고 **⌥⌘Space**를 입력하세요.
+3. 저장하세요. 시스템 설정을 바꾼 뒤에도 ⚠️가 표시되면 QuickLaunch를 재시작하거나 단축키를 편집·저장해 다시 등록하세요.
+
+Finder는 `/System/Library/CoreServices/Finder.app`에서 자동으로 목록에 추가됩니다. 실행 중인 Finder는 기존 창을 유지한 채 활성화합니다. 모두 최소화되어 있으면 **최소화된 창 복원**을 켜고 손쉬운 사용 권한을 허용하세요. 열린 폴더 창이 하나도 없으면 Finder의 데스크탑이 활성화되며, **⌘N**으로 새 창을 열 수 있습니다. 다른 앱은 기존 열기 동작을 유지합니다.
+
 ### 옵션
 
 | 옵션 | 설명 |
@@ -83,7 +99,7 @@ make app SWIFT_BUILD_FLAGS="--build-system native --sdk /Library/Developer/Comma
 
 - **최소화된 창:** QuickLaunch에서 **최소화된 창 복원**을 켜고 **손쉬운 사용 권한 허용…**을 누른 다음, **시스템 설정 → 개인정보 보호 및 보안 → 손쉬운 사용**에서 QuickLaunch를 허용하세요. QuickLaunch로 돌아와 단축키를 다시 누르면 됩니다. 최소화되지 않은 창을 우선 사용하고, 모든 창이 최소화되어 있으면 하나만 복원합니다. macOS 손쉬운 사용에 창 정보를 제공하지 않는 앱은 복원을 지원하지 않을 수 있습니다. 권한을 거절하거나 해제해도 기본 앱 실행은 동작합니다.
 - **다른 데스크탑(Space) 또는 전체 화면의 창:** **시스템 설정 → 데스크탑 및 Dock → Mission Control**에서 **‘응용 프로그램으로 전환할 때, 응용 프로그램에 대해 윈도우가 열려 있는 Space로 전환’**을 켜세요. QuickLaunch는 기존 앱의 활성화를 요청하고, 실제 Space 전환은 macOS가 처리합니다. 창을 현재 데스크탑이나 모니터로 옮기지는 않습니다. [Apple의 Spaces 안내](https://support.apple.com/ko-kr/guide/mac-help/mh14112/mac)도 참고하세요.
-- **열린 창이 없는 앱:** 일반적인 앱 열기 요청을 보내며, 새 창 생성 여부는 해당 앱이 결정합니다.
+- **열린 창이 없는 앱:** 위에서 설명한 실행 중인 Finder를 제외하고 일반적인 앱 열기 요청을 보내며, 새 창 생성 여부는 해당 앱이 결정합니다.
 
 ### 참고
 

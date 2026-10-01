@@ -13,6 +13,7 @@
 "add.shortcut" = "Shortcut";
 "add.chooseOther" = "Choose Another App…";
 "add.chooseChromeApp" = "Choose Chrome Web App…";
+"add.finderHint" = "Reuses existing Finder windows. To use ⌥⌘Space, turn off “Show Finder search window” in System Settings → Keyboard → Keyboard Shortcuts → Spotlight.";
 "add.save" = "Save";
 "add.cancel" = "Cancel";
 "add.duplicate" = "This shortcut is already in use.";

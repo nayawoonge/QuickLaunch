@@ -20,6 +20,14 @@
 - 🫥 Optionally hide the Dock icon
 - 🌐 English / Korean (follows system language)
 
+## Changes in v1.0.3
+
+- Finder now appears in the app picker.
+- Finder shortcuts activate existing windows without sending a reopen request that could create another window.
+- Added setup instructions for using `⌥⌘Space` instead of the system's Finder search shortcut.
+
+See the [English / Korean release notes](docs/releases/v1.0.3.md) for details and the [release publishing guide](docs/releases/README.md) for future updates.
+
 ## Screenshots
 
 <p align="center">
@@ -68,6 +76,14 @@ The XCTest suite (`swift test`) requires a toolchain that includes XCTest, such 
 2. Pick an app, click **Click to Record**, and press a key combo (e.g. `⌥⌘T`)
 3. Save — the hotkey now launches/activates that app from anywhere
 
+### Use ⌥⌘Space for existing Finder windows
+
+1. In **System Settings → Keyboard → Keyboard Shortcuts → Spotlight**, turn off **Show Finder search window** (⌥⌘Space). The built-in shortcut opens a Finder search window; see [Apple's shortcut guide](https://support.apple.com/102650).
+2. In QuickLaunch, click **Add (+)**, select **Finder**, and record **⌥⌘Space**.
+3. Save. If the shortcut is marked with ⚠️ after changing the system setting, restart QuickLaunch or edit and save the shortcut to register it again.
+
+Finder is automatically included from `/System/Library/CoreServices/Finder.app`. A running Finder is activated directly, preserving its existing windows. If all its windows are minimized, enable **Restore minimized windows** and allow Accessibility. If no folder windows are open, Finder's desktop becomes active; press **⌘N** for a new window. Other apps keep their usual open/reopen behavior.
+
 ### Options
 
 | Option | Description |
@@ -83,7 +99,7 @@ The XCTest suite (`swift test`) requires a toolchain that includes XCTest, such 
 
 - **Minimized windows:** enable **Restore minimized windows** in QuickLaunch, then click **Allow Accessibility…** and allow QuickLaunch under **System Settings → Privacy & Security → Accessibility**. Return to QuickLaunch and try the hotkey again. It prefers an unminimized window; if all windows are minimized, it restores one. Apps that do not expose their windows through macOS Accessibility may not support restoration. Basic launching still works if access is denied or revoked.
 - **Another desktop (Space) or full-screen window:** in **System Settings → Desktop & Dock → Mission Control**, enable **“When switching to an application, switch to a Space with open windows for the application.”** QuickLaunch requests activation of the existing app; macOS controls the Space transition. It does not move windows to the current desktop or monitor. See [Apple's Spaces guide](https://support.apple.com/guide/mac-help/mh14112/mac).
-- **No open windows:** QuickLaunch sends the normal app open request; the target app decides whether to create a new window.
+- **No open windows:** except for a running Finder (see above), QuickLaunch sends the normal app open request; the target app decides whether to create a new window.
 
 ### Notes
 

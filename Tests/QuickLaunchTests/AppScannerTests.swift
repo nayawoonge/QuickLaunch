@@ -3,6 +3,12 @@ import XCTest
 @testable import QuickLaunch
 
 final class AppScannerTests: XCTestCase {
+    func testDefaultScanIncludesFinderExactlyOnce() {
+        let finder = AppScanner.scan().filter { $0.bundleID == "com.apple.finder" }
+        XCTAssertEqual(finder.count, 1)
+        XCTAssertEqual(finder.first?.path, "/System/Library/CoreServices/Finder.app")
+    }
+
     func testFindsBrowserWebAppInNestedLocalizedDirectory() throws {
         let root = FileManager.default.temporaryDirectory
             .appendingPathComponent(UUID().uuidString, isDirectory: true)

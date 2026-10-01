@@ -39,12 +39,21 @@ struct ShortcutEditorView: View {
             recorderSection
                 .padding(16)
 
+            if selectedApp?.bundleID == "com.apple.finder" {
+                Text(L("add.finderHint"))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 12)
+            }
+
             Divider()
 
             footer
                 .padding(16)
         }
-        .frame(width: 440, height: 520)
+        .frame(width: 440, height: selectedApp?.bundleID == "com.apple.finder" ? 600 : 520)
         .task { loadApps() }
     }
 

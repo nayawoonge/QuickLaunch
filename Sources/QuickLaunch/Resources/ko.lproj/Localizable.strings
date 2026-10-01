@@ -13,6 +13,7 @@
 "add.shortcut" = "단축키";
 "add.chooseOther" = "다른 앱 선택…";
 "add.chooseChromeApp" = "Chrome 웹 앱 선택…";
+"add.finderHint" = "기존 Finder 창을 활성화합니다. ⌥⌘Space를 쓰려면 시스템 설정 → 키보드 → 키보드 단축키 → Spotlight에서 ‘Finder 검색 윈도우 보기’를 먼저 끄세요.";
 "add.save" = "저장";
 "add.cancel" = "취소";
 "add.duplicate" = "이미 사용 중인 단축키입니다.";

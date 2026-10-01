@@ -4,19 +4,55 @@ on:
   push:
     tags: ["v*"]
   workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing version tag to release (for example, v1.0.3)"
+        required: true
+        type: string
 
 jobs:
   build:
     runs-on: macos-14
     permissions:
       contents: write
+    env:
+      RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
     steps:
+      - name: Validate release tag
+        id: validate_tag
+        shell: bash
+        run: |
+          if [[ ! "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Expected a version tag such as v1.0.3." >&2
+            exit 1
+          fi
+
       - uses: actions/checkout@v4
+        with:
+          ref: refs/tags/${{ env.RELEASE_TAG }}
+
+      - name: Validate version and release notes
+        id: validate_release
+        shell: bash
+        run: |
+          APP_VERSION=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" Support/Info.plist)
+          if [[ "$RELEASE_TAG" != "v$APP_VERSION" ]]; then
+            echo "Release tag must match CFBundleShortVersionString in Support/Info.plist." >&2
+            exit 1
+          fi
+          if [[ ! -s "docs/releases/$RELEASE_TAG.md" ]]; then
+            echo "Missing or empty release notes: docs/releases/$RELEASE_TAG.md" >&2
+            exit 1
+          fi
 
       - name: Build universal DMG
         run: make dmg ARCHS="--arch arm64 --arch x86_64"
 
-      - name: Upload release asset
+      - name: Publish DMG and release notes
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ env.RELEASE_TAG }}
+          name: QuickLaunch ${{ env.RELEASE_TAG }}
+          body_path: docs/releases/${{ env.RELEASE_TAG }}.md
           files: build/QuickLaunch.dmg
+          fail_on_unmatched_files: true

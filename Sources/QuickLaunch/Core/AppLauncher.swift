@@ -13,21 +13,30 @@ final class AppLauncher {
         let request = UUID()
         latestRequest = request
         let previousApp = NSWorkspace.shared.frontmostApplication
-        let savedURL = URL(fileURLWithPath: shortcut.appPath)
-        guard let url = FileManager.default.fileExists(atPath: savedURL.path)
-            ? savedURL
-            : NSWorkspace.shared.urlForApplication(withBundleIdentifier: shortcut.bundleID)
-        else { return }
-
-        let config = NSWorkspace.OpenConfiguration()
-        config.activates = true
-        config.createsNewApplicationInstance = false
-
         Task {
             do {
-                // Keep the normal open/reopen event: apps with no windows can
-                // create one, and browser web apps keep their usual launch path.
-                let app = try await NSWorkspace.shared.openApplication(at: url, configuration: config)
+                let app: NSRunningApplication
+                if shortcut.bundleID == "com.apple.finder",
+                   let finder = NSRunningApplication.runningApplications(withBundleIdentifier: "com.apple.finder")
+                    .first(where: { !$0.isTerminated }) {
+                    // Finder is normally always running. Activating it directly
+                    // preserves its current windows and avoids a reopen event
+                    // creating a new folder window (including when minimized).
+                    app = finder
+                } else {
+                    let savedURL = URL(fileURLWithPath: shortcut.appPath)
+                    guard let url = FileManager.default.fileExists(atPath: savedURL.path)
+                        ? savedURL
+                        : NSWorkspace.shared.urlForApplication(withBundleIdentifier: shortcut.bundleID)
+                    else { return }
+
+                    let config = NSWorkspace.OpenConfiguration()
+                    config.activates = true
+                    config.createsNewApplicationInstance = false
+                    // Other apps retain their normal reopen behavior, including
+                    // browser web apps and apps with no open windows.
+                    app = try await NSWorkspace.shared.openApplication(at: url, configuration: config)
+                }
                 guard shouldContinue(request, app: app, previousApp: previousApp) else { return }
                 bringForward(app)
 
