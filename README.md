@@ -20,6 +20,11 @@
 - 🫥 Optionally hide the Dock icon
 - 🌐 English / Korean (follows system language)
 
+## Unreleased (source builds)
+
+- Automatically release QuickLaunch hotkeys while supported remote desktop or VM apps are frontmost, then restore them when you switch away. Enabled by default; can be turned off.
+- Manually pause hotkeys from Settings or the menu bar for other clients or troubleshooting.
+
 ## Changes in v1.0.3
 
 - Finder now appears in the app picker.
@@ -91,6 +96,8 @@ Finder is automatically included from `/System/Library/CoreServices/Finder.app`.
 | Launch at login | Start QuickLaunch automatically at login (`SMAppService`) |
 | Show icon in menu bar | Turn off to remove the icon from the top menu bar |
 | Hide Dock icon | Turn on to hide the app from the Dock and `⌘⇥` app switcher |
+| Pause hotkeys in remote desktop & VM apps | On by default. Releases all QuickLaunch hotkeys while Windows App / Microsoft Remote Desktop, Parallels Desktop (including its Windows/Linux and macOS VM windows), or VMware Fusion is frontmost. |
+| Pause all QuickLaunch hotkeys | Manual pause until turned off or QuickLaunch restarts. Apps can still be launched directly from the menu bar. |
 | Restore minimized windows | Bring an existing window forward; restore one if all windows are minimized. Off by default; requires Accessibility permission. |
 
 > **If both icons are hidden**: launch QuickLaunch again (Spotlight → QuickLaunch) — the settings window of the running instance will reopen.
@@ -100,6 +107,17 @@ Finder is automatically included from `/System/Library/CoreServices/Finder.app`.
 - **Minimized windows:** enable **Restore minimized windows** in QuickLaunch, then click **Allow Accessibility…** and allow QuickLaunch under **System Settings → Privacy & Security → Accessibility**. Return to QuickLaunch and try the hotkey again. It prefers an unminimized window; if all windows are minimized, it restores one. Apps that do not expose their windows through macOS Accessibility may not support restoration. Basic launching still works if access is denied or revoked.
 - **Another desktop (Space) or full-screen window:** in **System Settings → Desktop & Dock → Mission Control**, enable **“When switching to an application, switch to a Space with open windows for the application.”** QuickLaunch requests activation of the existing app; macOS controls the Space transition. It does not move windows to the current desktop or monitor. See [Apple's Spaces guide](https://support.apple.com/guide/mac-help/mh14112/mac).
 - **No open windows:** except for a running Finder (see above), QuickLaunch sends the normal app open request; the target app decides whether to create a new window.
+
+### Shortcuts inside remote desktops and virtual machines
+
+QuickLaunch's registered global hotkeys can prevent the same combinations from reaching a remote session. **Pause hotkeys in remote desktop & VM apps** unregisters them while a supported client is frontmost, including its connection list or Control Center. This also applies when VMware runs inside a Windows App RDP session: QuickLaunch detects the Mac client, not the guest OS.
+
+While paused, **all QuickLaunch hotkeys are unavailable**, including app-switching shortcuts. Switch to a local app using the Dock or macOS app switcher to resume them. Manual pause and shortcut recording take priority: leaving a remote app does not cancel either pause. Automatic pause does not require Accessibility permission. Other clients, browser-based sessions, and separate guest-app launchers are not automatically detected; use manual pause for these.
+
+If a guest shortcut such as `Ctrl+Alt+T` still fails, compare with QuickLaunch completely quit. This feature cannot change how RDP, VMware, or the guest OS handles keys.
+
+- **Windows App on macOS:** try **Connections → Keyboard Mode → Scancode** and press **Control + left Option + T** with the guest focused. Right Option maps to AltGr. Switch back to Unicode if needed for IME input. See [Microsoft's keyboard guide](https://learn.microsoft.com/en-us/windows-app/input-keyboard-mouse-touch-pen?tabs=macos).
+- **VMware Workstation inside Windows:** check **Edit → Preferences → Hot Keys**. `Ctrl+Alt` can be assigned to release input from the VM and conflict with guest shortcuts. See [Broadcom's input-release guidance](https://knowledge.broadcom.com/external/article/302740); available settings vary by version.
 
 ### Notes
 

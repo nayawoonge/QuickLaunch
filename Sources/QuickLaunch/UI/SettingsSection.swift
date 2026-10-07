@@ -2,6 +2,7 @@ import SwiftUI
 import ServiceManagement
 
 struct SettingsSection: View {
+    @ObservedObject private var store = ShortcutStore.shared
     @AppStorage(PrefKey.showMenuBarIcon) private var showMenuBarIcon = true
     @AppStorage(PrefKey.hideDockIcon) private var hideDockIcon = false
     @AppStorage(PrefKey.restoreMinimizedWindows) private var restoreMinimizedWindows = false
@@ -30,6 +31,12 @@ struct SettingsSection: View {
                     .onChange(of: hideDockIcon) { _, _ in
                         AppDelegate.shared.applyActivationPolicy()
                     }
+
+                Toggle(L("settings.pauseInRemoteApps"), isOn: $store.pauseInRemoteApps)
+                    .help(L("settings.pauseInRemoteAppsHelp"))
+
+                Toggle(L("settings.pauseHotKeys"), isOn: $store.isManuallyPaused)
+                    .help(L("settings.pauseHotKeysHelp"))
 
                 Toggle(L("settings.restoreMinimized"), isOn: $restoreMinimizedWindows)
                     .onChange(of: restoreMinimizedWindows) { _, _ in

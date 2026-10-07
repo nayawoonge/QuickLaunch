@@ -17,6 +17,14 @@ struct MenuBarContent: View {
 
         Divider()
 
+        if store.isPausedForRemoteApp {
+            Text(L("menubar.pausedForRemoteApp"))
+        }
+
+        Button(L(store.isManuallyPaused ? "menubar.resumeHotKeys" : "menubar.pauseHotKeys")) {
+            store.isManuallyPaused.toggle()
+        }
+
         Button(L("menubar.open")) {
             openWindow(id: "main")
             NSApp.activate(ignoringOtherApps: true)

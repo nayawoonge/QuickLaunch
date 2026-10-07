@@ -1,9 +1,15 @@
 import AppKit
 import Carbon.HIToolbox
 
+protocol HotKeyRegistering: AnyObject {
+    @discardableResult
+    func register(keyCode: UInt32, carbonModifiers: UInt32, handler: @escaping () -> Void) -> Bool
+    func unregisterAll()
+}
+
 /// Registers system-wide hotkeys via Carbon `RegisterEventHotKey`.
 /// No Accessibility permission is required for this API.
-final class HotKeyManager {
+final class HotKeyManager: HotKeyRegistering {
     static let shared = HotKeyManager()
 
     private var hotKeyRefs: [UInt32: EventHotKeyRef] = [:]

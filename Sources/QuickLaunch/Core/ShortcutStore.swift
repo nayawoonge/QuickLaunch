@@ -16,33 +16,113 @@ final class ShortcutStore: ObservableObject {
     /// IDs of shortcuts whose hotkey registration was refused by the system.
     @Published private(set) var failedShortcutIDs: Set<UUID> = []
 
-    private let defaultsKey = "shortcuts"
+    @Published private var suspension = HotKeySuspensionState()
 
-    private init() {
-        load()
+    var pauseInRemoteApps: Bool {
+        get { suspension.pauseInRemoteApps }
+        set {
+            defaults.set(newValue, forKey: PrefKey.pauseInRemoteApps)
+            updateSuspension { $0.pauseInRemoteApps = newValue }
+        }
+    }
+
+    /// Session-only: restarting QuickLaunch clears a manual pause.
+    var isManuallyPaused: Bool {
+        get { suspension.isManuallyPaused }
+        set { updateSuspension { $0.isManuallyPaused = newValue } }
+    }
+
+    var isPausedForRemoteApp: Bool { suspension.isPausedForRemoteApp }
+    var areHotKeysPaused: Bool { suspension.isSuspended }
+
+    private let defaults: UserDefaults
+    private let hotKeyManager: HotKeyRegistering
+    private let defaultsKey = "shortcuts"
+    private var activationObserver: NSObjectProtocol?
+
+    init(defaults: UserDefaults = .standard,
+         hotKeyManager: HotKeyRegistering = HotKeyManager.shared,
+         observeWorkspace: Bool = true) {
+        self.defaults = defaults
+        self.hotKeyManager = hotKeyManager
+        suspension.pauseInRemoteApps = defaults.object(forKey: PrefKey.pauseInRemoteApps) as? Bool ?? true
+
+        if observeWorkspace {
+            suspension.frontmostBundleID = NSWorkspace.shared.frontmostApplication?.bundleIdentifier
+            activationObserver = NSWorkspace.shared.notificationCenter.addObserver(
+                forName: NSWorkspace.didActivateApplicationNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] notification in
+                let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication
+                self?.updateFrontmostApplication(bundleID: app?.bundleIdentifier)
+            }
+        }
+
+        if let data = defaults.data(forKey: defaultsKey),
+           let decoded = try? JSONDecoder().decode([AppShortcut].self, from: data) {
+            shortcuts = decoded
+        }
         registerAll()
+    }
+
+    deinit {
+        if let activationObserver {
+            NSWorkspace.shared.notificationCenter.removeObserver(activationObserver)
+        }
+        hotKeyManager.unregisterAll()
     }
 
     // MARK: - Hotkey registration
 
     func registerAll() {
-        HotKeyManager.shared.unregisterAll()
+        // Skipping the handler alone is not enough: a registered Carbon hotkey still
+        // consumes the combination before a remote desktop or VM can receive it.
+        hotKeyManager.unregisterAll()
+        guard !areHotKeysPaused else {
+            failedShortcutIDs = []
+            return
+        }
+
         var failed: Set<UUID> = []
         for shortcut in shortcuts {
-            let ok = HotKeyManager.shared.register(
+            let ok = hotKeyManager.register(
                 keyCode: UInt32(shortcut.keyCode),
                 carbonModifiers: shortcut.carbonModifiers
             ) { [weak self] in
-                self?.launch(shortcut)
+                guard let self, !self.areHotKeysPaused else { return }
+                self.launch(shortcut)
             }
             if !ok { failed.insert(shortcut.id) }
         }
         failedShortcutIDs = failed
     }
 
-    /// Temporarily release all hotkeys (used while recording a new combo).
-    func suspendHotKeys() {
-        HotKeyManager.shared.unregisterAll()
+    func updateFrontmostApplication(bundleID: String?) {
+        updateSuspension { $0.frontmostBundleID = bundleID }
+    }
+
+    /// Each recorder owns a pause so closing one cannot resume another recorder's keys.
+    func beginRecordingHotKey() -> UUID {
+        let session = UUID()
+        updateSuspension { $0.recordingSessions.insert(session) }
+        return session
+    }
+
+    func endRecordingHotKey(_ session: UUID) {
+        updateSuspension { $0.recordingSessions.remove(session) }
+    }
+
+    private func updateSuspension(_ change: (inout HotKeySuspensionState) -> Void) {
+        let wasSuspended = suspension.isSuspended
+        var updated = suspension
+        change(&updated)
+        guard updated != suspension else { return }
+        suspension = updated
+        // Ordinary app switches do not needlessly release and re-register every key.
+        if wasSuspended != updated.isSuspended {
+            registerAll()
+        }
     }
 
     // MARK: - Launching
@@ -74,15 +154,8 @@ final class ShortcutStore: ObservableObject {
 
     // MARK: - Persistence
 
-    private func load() {
-        guard let data = UserDefaults.standard.data(forKey: defaultsKey),
-              let decoded = try? JSONDecoder().decode([AppShortcut].self, from: data)
-        else { return }
-        shortcuts = decoded
-    }
-
     private func save() {
         guard let data = try? JSONEncoder().encode(shortcuts) else { return }
-        UserDefaults.standard.set(data, forKey: defaultsKey)
+        defaults.set(data, forKey: defaultsKey)
     }
 }

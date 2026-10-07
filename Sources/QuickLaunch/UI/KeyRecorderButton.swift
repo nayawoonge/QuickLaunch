@@ -19,6 +19,7 @@ struct KeyRecorderButton: View {
 
     @State private var isRecording = false
     @State private var monitor: Any?
+    @State private var recordingSession: UUID?
 
     var body: some View {
         Button {
@@ -40,7 +41,7 @@ struct KeyRecorderButton: View {
         isRecording = true
         // Release global hotkeys so the combo being recorded reaches us
         // even if it is already assigned.
-        ShortcutStore.shared.suspendHotKeys()
+        recordingSession = ShortcutStore.shared.beginRecordingHotKey()
 
         monitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
             let modifiers = KeyCodeHelper.carbonModifiers(from: event.modifierFlags)
@@ -73,6 +74,9 @@ struct KeyRecorderButton: View {
         }
         monitor = nil
         isRecording = false
-        ShortcutStore.shared.registerAll()
+        if let recordingSession {
+            ShortcutStore.shared.endRecordingHotKey(recordingSession)
+            self.recordingSession = nil
+        }
     }
 }

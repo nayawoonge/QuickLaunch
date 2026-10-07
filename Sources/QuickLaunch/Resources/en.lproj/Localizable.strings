@@ -25,6 +25,10 @@
 "settings.launchAtLogin" = "Launch at login";
 "settings.showMenuBar" = "Show icon in menu bar";
 "settings.hideDock" = "Hide Dock icon";
+"settings.pauseInRemoteApps" = "Pause hotkeys in remote desktop & VM apps";
+"settings.pauseInRemoteAppsHelp" = "Release all QuickLaunch hotkeys while Windows App / Microsoft Remote Desktop, Parallels, or VMware Fusion is frontmost. Switch to another app to resume. Includes the client's connection list, not just guest windows.";
+"settings.pauseHotKeys" = "Pause all QuickLaunch hotkeys";
+"settings.pauseHotKeysHelp" = "Release registered hotkeys until you turn this off or restart QuickLaunch. You can still launch apps from the menu bar. Useful for other remote clients or troubleshooting.";
 "settings.restoreMinimized" = "Restore minimized windows";
 "settings.restoreMinimizedHelp" = "Bring an existing window forward. If all windows are minimized, restore one.";
 "settings.accessibilityRequired" = "Allow QuickLaunch in System Settings → Privacy & Security → Accessibility to restore windows. Basic app launching still works without access.";
@@ -35,5 +39,8 @@
 "menubar.open" = "Open QuickLaunch";
 "menubar.quit" = "Quit";
 "menubar.noShortcuts" = "No shortcuts registered";
+"menubar.pauseHotKeys" = "Pause Hotkeys";
+"menubar.resumeHotKeys" = "Resume Hotkeys";
+"menubar.pausedForRemoteApp" = "Hotkeys paused for remote / VM app";
 
 "alert.registerFailed" = "Failed to register this hotkey. It may be reserved by the system or another app.";
